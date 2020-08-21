@@ -3,10 +3,14 @@ import java.awt.*;
 class Cell extends Rectangle {
     // fields
     static int size = 35;
+    char col;
+    int row;
 
     //constructors
-    public Cell(int x, int y){
+    public Cell(char col, int row, int x, int y){
         super(x,y,size,size);
+        this.col = col;
+        this.row = row;
     }
 
     //methods

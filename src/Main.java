@@ -8,8 +8,8 @@ class Main extends JFrame {
         Stage stage;
 
         public App() {
-            setPreferredSize(new Dimension(720, 720));
-            stage = new Stage();
+            setPreferredSize(new Dimension(880, 720));
+            stage = StageReader.readStage("data/stage1.rvb");
         }
 
         @Override
