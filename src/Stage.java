@@ -10,10 +10,6 @@ public class Stage {
     public Stage(){
         grid = new Grid();
         actors = new ArrayList<Actor>();
-    
-        actors.add(new Puppy(grid.cellAtColRow('A', 0).get()));
-        actors.add(new Lion(grid.cellAtColRow('A', 18).get()));
-        actors.add(new Rabbit(grid.cellAtColRow('J',3).get()));
     }
 
     public void paint(Graphics g, Point mouseLoc){
