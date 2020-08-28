@@ -3,9 +3,16 @@ import java.util.ArrayList;
 
 public class Puppy extends Actor {
 
-    public Puppy(Cell loc){
+    public Puppy(Cell loc, float redness){
         this.loc = loc;
+        this.redness = redness;
         this.colour = Color.GREEN;
+        this.turns = 1;
+        this.moves = 3;
+        setPoly();
+    }
+
+    public void setPoly(){
         this.display = new ArrayList<Polygon>();
         Polygon ear1 = new Polygon();
         ear1.addPoint(loc.x + 5, loc.y + 5);
@@ -24,5 +31,4 @@ public class Puppy extends Actor {
         this.display.add(ear1);
         this.display.add(ear2);
     }
-
 }

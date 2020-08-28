@@ -3,9 +3,16 @@ import java.util.ArrayList;
 
 public class Rabbit extends Actor {
 
-    public Rabbit(Cell loc) {
+    public Rabbit(Cell loc, float redness) {
         this.loc = loc;
+        this.redness = redness;
         this.colour = Color.WHITE;
+        this.turns = 1;
+        this.moves = 5;
+        setPoly();
+    }
+
+    public void setPoly(){
         this.display = new ArrayList<Polygon>();
         Polygon ear1 = new Polygon();
         ear1.addPoint(loc.x + 11, loc.y + 5);

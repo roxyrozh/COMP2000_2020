@@ -1,5 +1,7 @@
-import java.awt.*;
-import java.util.Optional;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Color;
+import java.util.*;
 import java.util.function.Consumer;
 
 class Grid {
@@ -59,6 +61,30 @@ class Grid {
                 func.accept(cells[i][j]);
             }
         }
-      }
+    }
+
+    public void paintOverlay(Graphics g, List<Cell> cells, Color colour){
+        g.setColor(colour);
+        for(Cell c: cells){
+            g.fillRect(c.x+2, c.y+2, c.width-4, c.height-4);
+        }
+    }
+
+    public List<Cell> getRadius(Cell from, int size) {
+        int i = labelToCol(from.col);
+        int j = from.row;
+        Set<Cell> inRadius = new HashSet<Cell>();
+        if (size > 0){
+            cellAtColRow(colToLabel(i), j - 1).ifPresent(inRadius::add);
+            cellAtColRow(colToLabel(i), j + 1).ifPresent(inRadius::add);
+            cellAtColRow(colToLabel(i - 1), j).ifPresent(inRadius::add);
+            cellAtColRow(colToLabel(i + 1), j).ifPresent(inRadius::add);
+        }
+
+        for(Cell c: inRadius.toArray(new Cell[0])){
+            inRadius.addAll(getRadius(c, size - 1));
+        }
+        return new ArrayList<Cell>(inRadius);
+    }
 
 }

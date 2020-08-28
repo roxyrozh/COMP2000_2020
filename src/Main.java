@@ -1,17 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.Duration;
 import java.time.Instant;
 
 class Main extends JFrame {
     
-    class App extends JPanel {
+    class App extends JPanel implements MouseListener {
         
         Stage stage;
 
         public App() {
             setPreferredSize(new Dimension(880, 720));
+            this.addMouseListener(this);
             stage = StageReader.readStage("data/stage1.rvb");
         }
 
@@ -19,6 +21,23 @@ class Main extends JFrame {
         public void paint(Graphics g) {
             stage.paint(g, getMousePosition());
         }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            stage.mouseClicked(e.getX(), e.getY());
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {}
+
+        @Override
+        public void mouseReleased(MouseEvent e) {}
+
+        @Override
+        public void mouseEntered(MouseEvent e) {}
+
+        @Override
+        public void mouseExited(MouseEvent e) {}
 
     }
 

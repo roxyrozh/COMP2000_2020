@@ -32,4 +32,12 @@ class Cell extends Rectangle {
             return false;
         }
     }
+
+    public int leftOfComparison(Cell c){
+        return Character.compare(col, c.col);
+    }
+
+    public int aboveComparison(Cell c){
+        return Integer.compare(row, c.row);
+    }
 }

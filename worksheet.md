@@ -197,3 +197,25 @@ Add the following method to the `Grid` class
  Now use this method to turn the `paint` method of the `Grid` class into a single line of code.  I.e. remove the double-nested loop and replace it with a call to `doToEachCell`.
 
 🤔 Can you find anywhere else this is useful?  🤔🤔 Can you make any other useful _higher order_ methods?
+
+# Task 17
+
+The team has signed off on the game concept and it is time to start developing the gameplay.  The big-wigs at your company have decided the world needs a new turn-based strategy game in the spirit of famicom-wars, so we will build one of those.  The first step is to put in the turns!  We are going to need:
+  * Characters on different teams
+  * A way for the player to move their characters
+  * A way for the computer to move the other characters.
+
+To help us make these changes, [take a look at a UML diagram of the system as we have it now](https://www.lucidchart.com/documents/view/518e1baf-1582-474e-b963-4b8333850507/0_0) and compare it to [a UML diagram of where we need to be (with changes in red)](https://www.lucidchart.com/documents/view/1fb646b1-5bb5-43e9-8c84-8d0565aa08f9)
+
+We have made all the changes for you, but please go through each one to understand what we have done.  I.e. your job for this task is to understand the code we have added rather than adding any code of your own.  I strongly encourage you to explore this commit on bitbucket or in source tree where you can see exactly what lines were added/deleted/modified in making these changes.
+
+If you play the game now, you will see there are three stages:
+  * player chooses character
+  * player chooses new location
+  * computer moves its characters
+
+Notice that the computer move is random every time.  The AI (such as it is) asks for all cells that actor can move to, and picks one at random to move to.
+
+# Task 18
+
+We are going to build some (very rudimentary) strategy into this turn-based strategy game.  At the moment, all the actors on team blue will just move randomly.  Instead, we want their strategy to be determined by _which row they are on_.  If they are on an even-numbered then they should move randomly, but if they are on an odd-numbered row they should _always move to the left-most possible location_.  Note:  if it is not clear yet, you need the strategy pattern so implement this.  Why is is the right pattern for this task?

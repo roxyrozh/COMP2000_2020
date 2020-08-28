@@ -9,24 +9,27 @@ class StageReader {
             Properties props = (new Properties());
             props.load(new FileInputStream(path));
             for (String key : props.stringPropertyNames()) {
-                System.out.println(key);
                 String value = props.getProperty(key);
                 Pattern cell = Pattern.compile("(.)(\\d+)");
                 List<Cell> cellsInQuestion = new ArrayList<Cell>();
                 Matcher cellMatcher = cell.matcher(key);
                 if (cellMatcher.matches()) {
-                    System.out.println(cellMatcher);
                     stage.grid.cellAtColRow(cellMatcher.group(1).charAt(0), Integer.parseInt(cellMatcher.group(2)))
                             .ifPresent(cellsInQuestion::add);
                 } else {System.out.println("no match");}
                 for (Cell c : cellsInQuestion) {
-                    System.out.println(c);
-                    if (value.equals("puppy")) {
-                        stage.actors.add(new Puppy(c));
-                    } else if (value.equals("lion")) {
-                        stage.actors.add(new Lion(c));
-                    } else if (value.equals("bunny")) {
-                        stage.actors.add(new Rabbit(c));
+                    if (value.equals("puppy red")){
+                        stage.actors.add(new Puppy(c, 1.0f));
+                    }else if (value.equals("puppy blue")){
+                        stage.actors.add(new Puppy(c, 0.0f));
+                    }else if (value.equals("lion red")){
+                        stage.actors.add(new Lion(c, 1.0f));
+                    }else if (value.equals("lion blue")){
+                        stage.actors.add(new Lion(c, 0.0f));
+                    }else if (value.equals("bunny red")){
+                        stage.actors.add(new Rabbit(c, 1.0f));
+                    }else if (value.equals("bunny red")){
+                        stage.actors.add(new Rabbit(c, 0.0f));
                     }
                 }
             }
