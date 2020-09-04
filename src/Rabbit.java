@@ -4,12 +4,11 @@ import java.util.ArrayList;
 public class Rabbit extends Actor {
 
     public Rabbit(Cell loc, float redness) {
-        this.loc = loc;
+        this.setLocation(loc);
         this.redness = redness;
         this.colour = Color.WHITE;
         this.turns = 1;
         this.moves = 5;
-        setPoly();
     }
 
     public void setPoly(){

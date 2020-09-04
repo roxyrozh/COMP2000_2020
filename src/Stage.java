@@ -28,8 +28,10 @@ public class Stage {
             for(Actor a: actors){
                 if (!a.isTeamRed()){
                     List<Cell> possibleLocs = getClearRadius(a.loc, a.moves);
-                    int moveCPUChooses = (new Random()).nextInt(possibleLocs.size());
-                    a.setLocation(possibleLocs.get(moveCPUChooses));
+
+                    Cell nextLoc = a.strat.chooseNextLoc(possibleLocs);
+
+                    a.setLocation(nextLoc);
                 }
             }
             currentState = State.ChoosingActor;
@@ -57,11 +59,13 @@ public class Stage {
         int yloc = 138;
         for(int i = 0; i < actors.size(); i++){
             Actor a = actors.get(i);
-            g.drawString(a.getClass().toString(),720, yloc + 50*i);
-            g.drawString("location:", 730, yloc + 13 + 50 * i);
-            g.drawString(Character.toString(a.loc.col) + Integer.toString(a.loc.row), 840, yloc + 13 + 50 * i);
-            g.drawString("redness:", 730, yloc + 26 + 50*i);
-            g.drawString(Float.toString(a.redness), 840, yloc + 26 + 50*i);
+            g.drawString(a.getClass().toString(),720, yloc + 70*i);
+            g.drawString("location:", 730, yloc + 13 + 70 * i);
+            g.drawString(Character.toString(a.loc.col) + Integer.toString(a.loc.row), 840, yloc + 13 + 70 * i);
+            g.drawString("redness:", 730, yloc + 26 + 70*i);
+            g.drawString(Float.toString(a.redness), 840, yloc + 26 + 70*i);
+            g.drawString("strat:", 730, yloc + 39 + 70*i);
+            g.drawString(a.strat.toString(), 840, yloc + 39 + 70*i);
         }
     }
 
