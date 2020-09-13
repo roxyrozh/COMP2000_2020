@@ -1,10 +1,12 @@
 import java.awt.*;
 
-class Cell extends Rectangle {
+abstract class Cell extends Rectangle {
     // fields
     static int size = 35;
     char col;
     int row;
+    String description;
+    Color colour;
 
     //constructors
     public Cell(char col, int row, int x, int y){
@@ -18,12 +20,14 @@ class Cell extends Rectangle {
         if(contains(mousePos)){
             g.setColor(Color.GRAY);
         } else {
-            g.setColor(Color.WHITE);
+            g.setColor(this.colour);
         }
         g.fillRect(x,y,size,size);
         g.setColor(Color.BLACK);
         g.drawRect(x,y,size,size);
     }
+
+    public abstract int crossingTime();
 
     public boolean contains(Point p){
         if (p != null){
