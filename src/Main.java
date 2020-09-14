@@ -42,6 +42,8 @@ class Main extends JFrame {
     }
 
     public static void main(String[] args) throws Exception {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new java.io.File("data/full_pack_2025.ttf")));
         Main window = new Main();
         window.run();
     }

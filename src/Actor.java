@@ -9,6 +9,7 @@ public abstract class Actor {
     float redness;
     int turns;
     int moves;
+    int range;
 
     public void paint(Graphics g){
         for(Polygon p: display){
@@ -33,5 +34,12 @@ public abstract class Actor {
             this.strat = new LeftMostMove();
         }
         setPoly();
+    }
+
+    public void makeRedder(float amt){
+        redness = redness + amt;
+        if(redness > 1.0f){
+            redness = 1.0f;
+        }
     }
 }

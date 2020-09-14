@@ -7,15 +7,17 @@ public class Stage {
     Grid grid;
     ArrayList<Actor> actors;
     List<Cell> cellOverlay;
+    List<MenuItem> menuOverlay;
     Optional<Actor> actorInAction;
 
-    enum State {ChoosingActor, SelectingNewLocation, CPUMoving}
+    enum State {ChoosingActor, SelectingNewLocation, CPUMoving, SelectingMenuItem, SelectingTarget}
     State currentState = State.ChoosingActor;
 
     public Stage(){
         grid = new Grid();
         actors = new ArrayList<Actor>();
         cellOverlay = new ArrayList<Cell>();
+        menuOverlay = new ArrayList<MenuItem>();
         currentState = State.ChoosingActor;
     }
 
@@ -25,7 +27,7 @@ public class Stage {
         if (currentState == State.CPUMoving){
             for(Actor a: actors){
                 if (!a.isTeamRed()){
-                    List<Cell> possibleLocs = getClearRadius(a.loc, a.moves);
+                    List<Cell> possibleLocs = getClearRadius(a.loc, a.moves, true);
 
                     Cell nextLoc = a.strat.chooseNextLoc(possibleLocs);
 
@@ -69,10 +71,15 @@ public class Stage {
             g.drawString("strat:", 730, yloc + 39 + 70*i);
             g.drawString(a.strat.toString(), 820, yloc + 39 + 70*i);
         }
+
+        // menu overlay (on top of everything else)
+        for(MenuItem mi: menuOverlay){
+            mi.paint(g);
+        }
     }
 
-    public List<Cell> getClearRadius(Cell from, int size){
-        List<Cell> init = grid.getRadius(from, size);
+    public List<Cell> getClearRadius(Cell from, int size, boolean considerTime){
+        List<Cell> init = grid.getRadius(from, size, considerTime);
         for(Actor a: actors){
             init.remove(a.loc);
         }
@@ -85,10 +92,16 @@ public class Stage {
                 actorInAction = Optional.empty();
                 for (Actor a : actors) {
                     if (a.loc.contains(x, y) && a.isTeamRed() && a.turns > 0) {
-                        cellOverlay = grid.getRadius(a.loc, a.moves);
+                        cellOverlay = grid.getRadius(a.loc, a.moves, true);
                         actorInAction = Optional.of(a);
                         currentState = State.SelectingNewLocation;
                     }
+                }
+                if(actorInAction.isEmpty()){
+                    currentState = State.SelectingMenuItem;
+                    menuOverlay.add(new MenuItem("Oops", x, y, () -> currentState = State.ChoosingActor));
+                    menuOverlay.add(new MenuItem("End Turn", x, y+MenuItem.height, () -> currentState = State.CPUMoving));
+                    menuOverlay.add(new MenuItem("End Game", x, y+MenuItem.height*2, () -> System.exit(0)));
                 }
                 break;
             case SelectingNewLocation:
@@ -98,27 +111,50 @@ public class Stage {
                         clicked = Optional.of(c);
                     }
                 }
-                cellOverlay = new ArrayList<Cell>();
                 if (clicked.isPresent() && actorInAction.isPresent()) {
+                    cellOverlay = new ArrayList<Cell>();
                     actorInAction.get().setLocation(clicked.get());
                     actorInAction.get().turns--;
-                    int redsWithMovesLeft = 0;
-                    for(Actor a: actors){
-                        if (a.isTeamRed() && a.turns > 0) {
-                            redsWithMovesLeft++;
+                    menuOverlay.add(new MenuItem("Fire", x, y, () -> {
+                        cellOverlay = grid.getRadius(actorInAction.get().loc, actorInAction.get().range, false);
+                        cellOverlay.remove(actorInAction.get().loc);
+                            currentState = State.SelectingTarget;
+                    }));
+                    currentState = State.SelectingMenuItem;
+                } 
+                break;
+                case SelectingMenuItem:
+                for(MenuItem mi : menuOverlay){
+                    if (mi.contains(x,y)){
+                        mi.action.run();
+                        menuOverlay = new ArrayList<MenuItem>();
+                    }
+                }
+                break;
+            case SelectingTarget:
+                for(Cell c: cellOverlay){
+                    if (c.contains(x, y)){
+                        Optional<Actor> oa = actorAt(c);
+                        if (oa.isPresent()){
+                            oa.get().makeRedder(0.1f);
                         }
                     }
-                    if (redsWithMovesLeft > 0){
-                        currentState = State.ChoosingActor;
-                    } else {
-                        currentState = State.CPUMoving;
-                    }
-                } 
+                }
+                cellOverlay = new ArrayList<Cell>();
+                currentState = State.ChoosingActor;
                 break;
             default:
                 System.out.println(currentState);
                 break;
         }
+    }
 
+    public Optional<Actor> actorAt(Cell c) {
+        for(Actor a: actors){
+            if (a.loc == c){
+                return Optional.of(a);
+            }
+        }
+        return Optional.empty();
     }
 }

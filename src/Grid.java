@@ -97,7 +97,7 @@ class Grid implements Iterable<Cell> {
         }
     }
 
-    public List<Cell> getRadius(Cell from, int size) {
+    public List<Cell> getRadius(Cell from, int size, boolean considerTime) {
         int i = labelToCol(from.col);
         int j = from.row;
         Set<Cell> inRadius = new HashSet<Cell>();
@@ -109,7 +109,12 @@ class Grid implements Iterable<Cell> {
         }
 
         for(Cell c: inRadius.toArray(new Cell[0])){
-            inRadius.addAll(getRadius(c, size - 1));
+            if(considerTime) {
+                inRadius.addAll(getRadius(c, size - c.crossingTime(), true));
+            }
+            else {
+                inRadius.addAll(getRadius(c, size - 1, false));
+            }
         }
         return new ArrayList<Cell>(inRadius);
     }
