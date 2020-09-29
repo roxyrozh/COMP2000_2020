@@ -9,6 +9,7 @@ public class Lion extends Actor {
         this.colour = Color.RED;
         this.turns = 1;
         this.moves = 1;
+        this.range = 1;
     }
 
     public void setPoly(){

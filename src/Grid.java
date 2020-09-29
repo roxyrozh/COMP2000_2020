@@ -7,12 +7,26 @@ import java.util.function.Consumer;
 class Grid implements Iterable<Cell> {
     //fields
     Cell[][] cells = new Cell[20][20];
+    private static Random rand = new Random();
 
     // constructor
     public Grid(){
         for(int i = 0; i < cells.length; i++){
             for(int j = 0; j < cells[i].length; j++){
-                cells[i][j] = new Cell(colToLabel(i), j, 10+35*i,10+35*j);
+                switch(rand.nextInt(10)) {
+                    case 0:   // 10%
+                        cells[i][j] = new Wall(colToLabel(i), j, 10+35*i, 10+35*j);
+                        break;
+                    case 1:   // 10%
+                        cells[i][j] = new Oasis(colToLabel(i), j, 10+35*i, 10+35*j);
+                        break;
+                    case 2:   // 10%
+                        cells[i][j] = new PalmTree(colToLabel(i), j, 10+35*i, 10+35*j);
+                        break;
+                    default:  // 70%
+                        cells[i][j] = new Sand(colToLabel(i), j, 10+35*i, 10+35*j);
+                        break;
+                }
             }
         }
     }
@@ -39,13 +53,40 @@ class Grid implements Iterable<Cell> {
         }
     }
 
+    public List<Cell> cellsInRange(char c1, int r1, char c2, int r2) {
+        int c1i = labelToCol(c1);
+        int c2i = labelToCol(c2);
+        List<Cell> output = new ArrayList<Cell>();
+        for(int i = c1i; i <= c2i; i++) {
+            for(int j = r1; j <= r2; j++) {
+                cellAtColRow(colToLabel(i), j).ifPresent(output::add);
+            }
+        }
+        return output;
+    }
+
+    public void replaceCell(Cell old, Cell replacement) {
+        cells[labelToCol(old.col)][old.row] = replacement;
+    }
+
     public Optional<Cell> cellAtPoint(Point p){
+
+        Iterator<Cell> iterCell = this.iterator();
+        while (iterCell.hasNext())
+        {
+         Cell c = iterCell.next();
+
+         if (c.contains(p)){
+         return Optional.of(c);
+        }
+        }
+        /*
         for(Cell c: this){
             if (c.contains(p)){
                 return Optional.of(c);
             }
         }
-
+        */
         return Optional.empty();
     }
 
@@ -55,19 +96,37 @@ class Grid implements Iterable<Cell> {
      * @param func The `Cell` to `void` function to apply at each spot.
      */
     public void doToEachCell(Consumer<Cell> func){
-        for(Cell c : this){
+
+        Iterator<Cell> iterCell = this.iterator();
+        while (iterCell.hasNext())
+        {
+         Cell c = iterCell.next();
+         func.accept(c);
+        }
+     
+   /*      for(Cell c : this){
             func.accept(c);
         }
+    */    
     }
+
 
     public void paintOverlay(Graphics g, List<Cell> cells, Color colour){
         g.setColor(colour);
-        for(Cell c: cells){
-            g.fillRect(c.x+2, c.y+2, c.width-4, c.height-4);
+
+        Iterator<Cell> iterCell = cells.iterator();
+        while (iterCell.hasNext())
+        {
+         Cell c = iterCell.next();
+         g.fillRect(c.x+2, c.y+2, c.width-4, c.height-4);
         }
+
+     //   for(Cell c: cells){
+     //       g.fillRect(c.x+2, c.y+2, c.width-4, c.height-4);
+        
     }
 
-    public List<Cell> getRadius(Cell from, int size) {
+    public List<Cell> getRadius(Cell from, int size, boolean considerTime) {
         int i = labelToCol(from.col);
         int j = from.row;
         Set<Cell> inRadius = new HashSet<Cell>();
@@ -79,7 +138,12 @@ class Grid implements Iterable<Cell> {
         }
 
         for(Cell c: inRadius.toArray(new Cell[0])){
-            inRadius.addAll(getRadius(c, size - 1));
+            if(considerTime) {
+                inRadius.addAll(getRadius(c, size - c.crossingTime(), true));
+            }
+            else {
+                inRadius.addAll(getRadius(c, size - 1, false));
+            }
         }
         return new ArrayList<Cell>(inRadius);
     }

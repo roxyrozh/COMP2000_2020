@@ -9,6 +9,7 @@ public class Puppy extends Actor {
         this.colour = Color.GREEN;
         this.turns = 1;
         this.moves = 3;
+        this.range = 1;
     }
 
     public void setPoly(){

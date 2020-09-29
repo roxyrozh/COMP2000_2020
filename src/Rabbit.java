@@ -9,6 +9,7 @@ public class Rabbit extends Actor {
         this.colour = Color.WHITE;
         this.turns = 1;
         this.moves = 5;
+        this.range = 3;
     }
 
     public void setPoly(){
